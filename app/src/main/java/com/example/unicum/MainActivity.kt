@@ -1,5 +1,6 @@
 package com.example.unicum
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +41,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.unicum.data.Drink
+import com.example.unicum.data.DrinksViewModel
+import com.example.unicum.db.Database
 import com.example.unicum.ui.theme.BackCard1
 import com.example.unicum.ui.theme.BackCard2
 import com.example.unicum.ui.theme.BackField
@@ -55,6 +61,7 @@ import com.example.unicum.ui.theme.FreeSellColor
 import com.example.unicum.ui.theme.RubbleColor
 import com.example.unicum.ui.theme.TextName
 import com.example.unicum.ui.theme.WhiteTextName
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -63,28 +70,33 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApp()
         }
+        val sharedPrefs = this.getSharedPreferences("shared prefs", Context.MODE_PRIVATE)
+        lifecycleScope.launch {
+            if (sharedPrefs.getBoolean("first", true)) {
+                Database.fillDb(applicationContext)
+                sharedPrefs.edit().putBoolean("first", false).apply()
+            }
+        }
     }
 }
 
 @Composable
 fun MyApp() {
     val navController = rememberNavController()
+    val viewModel = DrinksViewModel()
     NavHost(navController, "fragmentDrinks") {
-        composable("FragmentDrinks") { FragmentDrinks() }
+        composable("FragmentDrinks") { FragmentDrinks(navController) }
         composable("FragmentSettings/{id}") { navBackStackEntry ->
-            FragmentSettings(navBackStackEntry.arguments?.getLong("id") ?: -1)
+            FragmentSettings(navBackStackEntry.arguments?.getInt("id") ?: -1)
         }
     }
 }
 
 @Composable
-fun FragmentDrinks() {
-    val itemList = listOf(
-        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33"),
-        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33"),
-        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33"),
-        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33")
-    )
+fun FragmentDrinks(navController: NavController) {
+    val viewModel = DrinksViewModel()
+    val itemList = viewModel.drinksFlow.collectAsState()
+    viewModel.getDrinks()
     val priceGradient = Brush.linearGradient(
         colors = listOf(BackPrice1, BackPrice2, BackPrice3),
         start = Offset(0f, 0f),
@@ -105,14 +117,14 @@ fun FragmentDrinks() {
             columns = GridCells.FixedSize(250.dp),
             contentPadding = PaddingValues(12.dp, 12.dp)
         ) {
-            items(itemList) { drink ->
+            items(itemList.value) { drink ->
                 Box(
                     Modifier
                         .width(227.dp)
                         .height(313.dp)
                         .background(cardGradient)
                         .clip(RoundedCornerShape(6.dp))
-                        .clickable { }
+                        .clickable { navController.navigate("FragmentSettings/${drink.id}") }
                 ) {
                     Column {
                         Image(
@@ -165,7 +177,10 @@ fun FragmentDrinks() {
 }
 
 @Composable
-fun FragmentSettings(id: Long) {
+fun FragmentSettings(id: Int) {
+    val viewModel = DrinksViewModel()
+    val drinkState = viewModel.drink.collectAsState()
+    viewModel.getDrinkById(id)
     Row(
         Modifier
             .fillMaxSize()
@@ -181,7 +196,7 @@ fun FragmentSettings(id: Long) {
                     .width(418.dp)
                     .height(52.dp)
                     .background(BackField)) {
-                Text(text = stringResource(id = R.string.naimenovanie),
+                Text(text = drinkState.value?.name ?: "",
                     Modifier
                         .width(418.dp)
                         .padding(10.dp), WhiteTextName, fontSize = 20.sp)
@@ -196,7 +211,7 @@ fun FragmentSettings(id: Long) {
                     .width(418.dp)
                     .height(52.dp)
                     .background(BackField)) {
-                Text(text = stringResource(id = R.string.naimenovanie),
+                Text(text = drinkState.value?.price ?: "",
                     Modifier
                         .width(150.dp)
                         .padding(10.dp), WhiteTextName, fontSize = 20.sp)
@@ -235,10 +250,4 @@ fun FragmentSettings(id: Long) {
                 .width(166.dp)
                 .align(Alignment.CenterVertically))
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DrinksPreview() {
-    FragmentDrinks()
 }
