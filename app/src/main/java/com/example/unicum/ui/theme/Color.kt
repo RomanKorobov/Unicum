@@ -1,5 +1,6 @@
 package com.example.unicum.ui.theme
 
+import android.widget.Button
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -18,3 +19,10 @@ val BackCard1 = Color(0xFF19110E)
 val BackCard2 = Color(0xFF100909)
 
 val TextName = Color(0xFFC4A79B)
+val WhiteTextName = Color(0xFFFFF2ED)
+
+val BackField = Color(0xFF150E0C)
+val RubbleColor = Color(0xFF896C61)
+val FreeSellColor = Color(0xFF896C61)
+val ButtonColor = Color(0xFFF77416)
+val ButtonTextColor = Color(0xFFFFFAF7)

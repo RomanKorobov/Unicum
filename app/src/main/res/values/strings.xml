@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Unicum</string>
+    <string name="naimenovanie">Наименование</string>
+    <string name="price">Цена</string>
+    <string name="sell_free">Продавать бесплатно</string>
+    <string name="rubble">₽</string>
+    <string name="save">Сохранить</string>
 </resources>

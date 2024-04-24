@@ -3,13 +3,16 @@ package com.example.unicum
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +34,7 @@ import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,10 +45,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unicum.data.Drink
 import com.example.unicum.ui.theme.BackCard1
 import com.example.unicum.ui.theme.BackCard2
+import com.example.unicum.ui.theme.BackField
 import com.example.unicum.ui.theme.BackPrice1
 import com.example.unicum.ui.theme.BackPrice2
 import com.example.unicum.ui.theme.BackPrice3
+import com.example.unicum.ui.theme.ButtonColor
+import com.example.unicum.ui.theme.ButtonTextColor
+import com.example.unicum.ui.theme.FreeSellColor
+import com.example.unicum.ui.theme.RubbleColor
 import com.example.unicum.ui.theme.TextName
+import com.example.unicum.ui.theme.WhiteTextName
 
 
 class MainActivity : ComponentActivity() {
@@ -68,7 +79,12 @@ fun MyApp() {
 
 @Composable
 fun FragmentDrinks() {
-    val itemList = listOf(Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33"))
+    val itemList = listOf(
+        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33"),
+        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33"),
+        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33"),
+        Drink(1, "Амаретто", "199", false, R.drawable.with_cream, "0.33")
+    )
     val priceGradient = Brush.linearGradient(
         colors = listOf(BackPrice1, BackPrice2, BackPrice3),
         start = Offset(0f, 0f),
@@ -79,52 +95,70 @@ fun FragmentDrinks() {
         start = Offset(0f, 0f),
         end = Offset(1000f, 1000f)
     )
-    LazyVerticalGrid(
-        columns = GridCells.FixedSize(227.dp),
-        contentPadding = PaddingValues(9.5.dp, 9.5.dp)
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(androidx.compose.ui.graphics.Color.White)
+            .padding(6.dp)
     ) {
-        items(itemList) { drink ->
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(cardGradient)) {
+        LazyVerticalGrid(
+            columns = GridCells.FixedSize(250.dp),
+            contentPadding = PaddingValues(12.dp, 12.dp)
+        ) {
+            items(itemList) { drink ->
                 Box(
                     Modifier
                         .width(227.dp)
                         .height(313.dp)
-                        .clickable { }.clip(RoundedCornerShape(16.dp))
+                        .background(cardGradient)
+                        .clip(RoundedCornerShape(6.dp))
+                        .clickable { }
                 ) {
-
-                Image(
-                    painterResource(id = R.drawable.with_cream),
-                    null,
-                    modifier = Modifier
-                        .height(166.dp)
-                        .width(166.dp),
-                )
-                Text(text = drink.name,
-                    Modifier
-                        .height(57.dp)
-                        .width(227.dp), fontSize = 17.sp, textAlign = TextAlign.Center)
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Row(
+                    Column {
+                        Image(
+                            painterResource(id = R.drawable.with_cream),
+                            null,
                             modifier = Modifier
-                                .width(227.dp)
-                                .background(priceGradient)
-                                .align(Alignment.BottomCenter)
-                        ) {
-                            Text(text = drink.volume,
-                                Modifier
-                                    .weight(1f)
-                                    .padding(15.dp), TextName, fontSize = 16.sp, textAlign = TextAlign.Start)
-                            if (!drink.free) Text(text = drink.price,
-                                Modifier
-                                    .weight(1f)
-                                    .padding(15.dp), TextName, fontSize = 18.sp, textAlign = TextAlign.End)
+                                .height(166.dp)
+                                .width(166.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                        Text(
+                            text = drink.name,
+                            Modifier
+                                .height(57.dp)
+                                .fillMaxWidth(), TextName, fontSize = 17.sp, textAlign = TextAlign.Center
+                        )
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            Row(
+                                modifier = Modifier
+                                    .width(227.dp)
+                                    .background(priceGradient)
+                                    .align(Alignment.BottomCenter)
+                            ) {
+                                Text(
+                                    text = drink.volume,
+                                    Modifier
+                                        .weight(1f)
+                                        .padding(15.dp),
+                                    TextName,
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Start
+                                )
+                                if (!drink.free) Text(
+                                    text = drink.price,
+                                    Modifier
+                                        .weight(1f)
+                                        .padding(15.dp),
+                                    TextName,
+                                    fontSize = 18.sp,
+                                    textAlign = TextAlign.End
+                                )
+                            }
                         }
                     }
-                }
 
+                }
             }
         }
     }
@@ -132,7 +166,75 @@ fun FragmentDrinks() {
 
 @Composable
 fun FragmentSettings(id: Long) {
-
+    Row(
+        Modifier
+            .fillMaxSize()
+            .background(androidx.compose.ui.graphics.Color.Black)
+    ) {
+        Column(Modifier.width(418.dp)) {
+            Text(text = stringResource(id = R.string.naimenovanie),
+                Modifier
+                    .width(418.dp)
+                    .align(Alignment.Start), TextName, fontSize = 16.sp)
+            Box(
+                Modifier
+                    .width(418.dp)
+                    .height(52.dp)
+                    .background(BackField)) {
+                Text(text = stringResource(id = R.string.naimenovanie),
+                    Modifier
+                        .width(418.dp)
+                        .padding(10.dp), WhiteTextName, fontSize = 20.sp)
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(text = stringResource(id = R.string.price),
+                Modifier
+                    .width(418.dp)
+                    .align(Alignment.Start), TextName, fontSize = 16.sp)
+            Box(
+                Modifier
+                    .width(418.dp)
+                    .height(52.dp)
+                    .background(BackField)) {
+                Text(text = stringResource(id = R.string.naimenovanie),
+                    Modifier
+                        .width(150.dp)
+                        .padding(10.dp), WhiteTextName, fontSize = 20.sp)
+                Text(text = stringResource(id = R.string.rubble),
+                    Modifier
+                        .width(50.dp)
+                        .padding(10.dp), RubbleColor, fontSize = 20.sp, textAlign = TextAlign.End)
+            }
+            Box(
+                modifier = Modifier
+                    .border(BorderStroke(2.dp, androidx.compose.ui.graphics.Color.Black), shape = RoundedCornerShape(10.dp))
+            ) {
+                Row {
+                    Text(text = stringResource(id = R.string.sell_free),
+                        Modifier
+                            .width(100.dp)
+                        , FreeSellColor, fontSize = 14.sp)
+                }
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            Button(onClick = { /*TODO*/ }, Modifier.background(ButtonColor)) {
+                Text(text = stringResource(id = R.string.sell_free),
+                    Modifier
+                        .width(100.dp)
+                    , ButtonTextColor, fontSize = 20.sp)
+            }
+        }
+        Image(painter = painterResource(id = R.drawable.with_cream), contentDescription = null,
+            modifier = Modifier
+                .height(166.dp)
+                .width(166.dp)
+                .align(Alignment.CenterVertically))
+        Image(painter = painterResource(id = R.drawable.without_cream), contentDescription = null,
+            modifier = Modifier
+                .height(166.dp)
+                .width(166.dp)
+                .align(Alignment.CenterVertically))
+    }
 }
 
 @Preview(showBackground = true)

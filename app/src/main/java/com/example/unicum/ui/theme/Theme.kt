@@ -46,7 +46,21 @@ private val LightColorScheme = lightColorScheme(
 val Montserrat = FontFamily(Font(R.font.montserrat_bold))
 
 val typography = Typography(
-    h1 = TextStyle(fontFamily = Montserrat, fontSize = 60.sp),
+    displayLarge = TextStyle(fontFamily = Montserrat, fontSize = 34.sp),
+    displayMedium = TextStyle(fontFamily = Montserrat, fontSize = 24.sp),
+    displaySmall = TextStyle(fontFamily = Montserrat, fontSize = 15.sp),
+    headlineLarge = TextStyle(fontFamily = Montserrat, fontSize = 30.sp),
+    headlineMedium = TextStyle(fontFamily = Montserrat, fontSize = 21.sp),
+    headlineSmall = TextStyle(fontFamily = Montserrat, fontSize = 18.sp),
+    titleLarge = TextStyle(fontFamily = Montserrat, fontSize = 26.sp),
+    titleMedium = TextStyle(fontFamily = Montserrat, fontSize = 20.sp),
+    titleSmall = TextStyle(fontFamily = Montserrat, fontSize = 16.sp),
+    bodyLarge = TextStyle(fontFamily = Montserrat, fontSize = 18.sp),
+    bodyMedium = TextStyle(fontFamily = Montserrat, fontSize = 14.sp),
+    bodySmall = TextStyle(fontFamily = Montserrat, fontSize = 12.sp),
+    labelLarge = TextStyle(fontFamily = Montserrat, fontSize = 18.sp),
+    labelMedium = TextStyle(fontFamily = Montserrat, fontSize = 14.sp),
+    labelSmall = TextStyle(fontFamily = Montserrat, fontSize = 12.sp)
 )
 
 @Composable
@@ -76,7 +90,7 @@ fun UnicumTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography(Montserrat),
+        typography = typography,
         content = content
     )
 }
